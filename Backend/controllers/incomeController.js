@@ -1,4 +1,4 @@
-const xlsr = require("xlsr")
+const xlsx = require("xlsx")
 const Income = require("../models/Income")
 
 // Add income source 
