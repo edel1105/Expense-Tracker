@@ -2,7 +2,7 @@ import React,{useState} from "react";
 import Authlayout from "../../Components/layouts/Authlayout";
 import {Link,useNavigate} from "react-router-dom";
 import Input from "../../Components/Inputs/Input";
-import { validateEmail } from "../../Utils/helper";
+//import { validateEmail } from "../../Utils/helper";
 
 const Login = () => {
   const [email,setEmail] =useState("");

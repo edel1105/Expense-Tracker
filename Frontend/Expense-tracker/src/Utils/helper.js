@@ -27,5 +27,22 @@ export const addThousandsSeparator = (num) => {
     : formattedInteger;
 };
 
+export const prepareExpenseBarChartData = (transactions) => {
+  if (!transactions || !Array.isArray(transactions)) return [];
 
+  const expenseMap = {};
+
+  transactions.forEach(({ date, amount }) => {
+    const day = new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    expenseMap[day] = (expenseMap[day] || 0) + amount;
+  });
+
+  return Object.keys(expenseMap).map((label) => ({
+    label,
+    value: expenseMap[label],
+  }));
+};
 

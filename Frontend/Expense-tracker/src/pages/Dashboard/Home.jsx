@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
-import useUserAuth from "../../hooks/useUserAuth";
+import { useUserAuth } from "../../hooks/useUserAuth";
 import { useNavigate } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
-import axiosInstance from "../../utils/axiosInstance";
-import InfoCard from "../../components/Cards/InfoCard";
-
+import axiosInstance from "../../Utils/axiosInstance";
+import RecentTransactions from "../../Components/Dashboard/RecentTransactions";
+import FinanceOverview from "../../Components/Dashboard/FinanceOverview";
+import ExpenseTransactions from "../../Components/Dashboard/ExpenseTransactions";
+import Last30DaysExpenses from "../../Components/Dashboard/Last30DaysExpenses";
+//import InfoCard from "../../components/Cards/InfoCard";
 import { LuHandCoins, LuWalletMinimal } from "react-icons/lu";
 import { IoMdCard } from "react-icons/io";
 
@@ -49,7 +52,7 @@ const Home = () => {
         </div>*/}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/*<RecentTransactions
+          <RecentTransactions
             transactions={dashboardData?.recentTransactions}
             onSeeMore={() => navigate("/expense")}
           />
@@ -57,7 +60,7 @@ const Home = () => {
             totalBalance={dashboardData?.totalBalance || 0}
             totalIncome={dashboardData?.totalIncome || 0}
             totalExpense={dashboardData?.totalExpenses || 0}
-          />*/}
+          />
 
           <ExpenseTransactions
             transactions={
