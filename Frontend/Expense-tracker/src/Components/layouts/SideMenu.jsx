@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-//import { SIDE_MENU_DATA } from "../../utils/data";
+import { SIDE_MENU_DATA } from "../../utils/data";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import CharAvatar from "../../Components/Cards/CharAvatar";
 
 const SideMenu = ({ activeMenu }) => {
   const { user, clearUser } = useContext(UserContext);
-
   const navigate = useNavigate();
 
   const handleClick = (route) => {
@@ -13,7 +13,6 @@ const SideMenu = ({ activeMenu }) => {
       handleLogout();
       return;
     }
-
     navigate(route);
   };
 
@@ -33,8 +32,12 @@ const SideMenu = ({ activeMenu }) => {
             className="w-20 h-20 bg-slate-400 rounded-full"
           />
         ) : (
-          <></>
+          <CharAvatar
+            name={user?.fullName || "User"}
+            className="w-20 h-20 bg-slate-400 rounded-full"
+          />
         )}
+
         <h5 className="text-gray-950 font-medium leading-6">
           {user?.fullName || ""}
         </h5>
@@ -57,3 +60,4 @@ const SideMenu = ({ activeMenu }) => {
 };
 
 export default SideMenu;
+

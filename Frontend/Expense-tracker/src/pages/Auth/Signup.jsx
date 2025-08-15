@@ -1,9 +1,12 @@
-import React,{useState} from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../../context/UserContext"; 
 import AuthLayout from "../../Components/layouts/Authlayout";
 import {Link,useNavigate} from "react-router-dom";
 import Input from "../../Components/Inputs/Input";
-//import { validateEmail } from "../../Utils/helper";
+import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../../Components/Inputs/ProfilePhotoSelector";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const Signup = () => {
     const [profilePic, setProfilePic] = useState(null);
@@ -13,6 +16,7 @@ const Signup = () => {
 
     const [error, setError] = useState(null);
 
+    const {updateUser} = useContext (UserContext);
     const navigate = useNavigate();
 
     // Handle Sign Up Form Submit
@@ -32,7 +36,37 @@ const Signup = () => {
 
       setError("");
 
-    }
+      //Signup API Call
+      try {
+      
+      if(profilePic){
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.imageUrl || "";
+      }
+
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        fullName,
+        email,
+        password,
+        profileImageUrl
+      });
+
+  const { token, user } = response.data;
+
+  if (token) {
+    localStorage.setItem("token", token);
+    updateUser(user);
+    navigate("/dashboard");
+  }
+} catch (error) {
+  if (error.response && error.response.data.message) {
+    setError(error.response.data.message);
+  } else {
+    setError("Something went wrong. Please try again.");
+  }
+}
+
+    };
     return (
     <AuthLayout>
     <div className="lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
@@ -44,7 +78,7 @@ const Signup = () => {
       <form onSubmit={handleSignUp}>
         <ProfilePhotoSelector image = {profilePic} setImage = {setProfilePic} /> 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+        
           <Input
             value={fullName}
             onChange={({ target }) => setFullName(target.value)}
@@ -61,7 +95,7 @@ const Signup = () => {
             type = "text"
           />
 
-        <div className="col-span-2">
+          <div className = "col-span-2">
           
           <Input 
             value = {password}
@@ -70,24 +104,26 @@ const Signup = () => {
             placeholder = "Min 8 Characters"
             type = "password"
           /> 
+          </div>
         </div>
-        </div>
-        {error && <p className = "text-red-500 text-xs pb-2.5">{error}</p>}
-            <button type = "submit" className="btn-primary">
-              SIGNUP 
-            </button>
+        {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
         
-            <p className="text-[13px] text-slate-800 mt-3">
-                Already have an account?{" "}
-                <Link className="font-medium text-primary underline" to="/Login">
-                  Login
-                </Link>
-            </p>
+                  <button type="submit" className="btn-primary">
+                    SIGNUP
+                  </button>
+        
+                  <p className="text-[13px] text-slate-800 mt-3">
+                    Already have an account?{" "}
+                    <Link className="font-medium text-primary underline" to="/login">
+                      Login
+                    </Link>
+                  </p>
       </form>
     </div>
   </AuthLayout>
-    
-  )
+);
+     
 }
-
 export default Signup
+
+

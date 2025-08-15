@@ -29,15 +29,29 @@ const UserProvider = ({ children }) => {
 };
 
 export default UserProvider;*/
-
 import React, { createContext, useState, useEffect } from "react";
-import axiosInstance from "../Utils/axiosInstance"; // your axios setup file
 
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // prevent flicker
+
+  // Load user from localStorage when app starts
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  // Save user to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   const updateUser = (userData) => {
     setUser(userData);
@@ -45,45 +59,20 @@ const UserProvider = ({ children }) => {
 
   const clearUser = () => {
     setUser(null);
-    localStorage.removeItem("token");
   };
 
-  // Fetch logged-in user on mount
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await axiosInstance.get("/auth/getUser", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(res.data.user);
-      } catch (err) {
-        console.error("Failed to fetch user:", err);
-        clearUser();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>; // optional spinner
-  }
-
   return (
-    <UserContext.Provider value={{ user, updateUser, clearUser }}>
+    <UserContext.Provider
+      value={{
+        user,
+        updateUser,
+        clearUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
 export default UserProvider;
+

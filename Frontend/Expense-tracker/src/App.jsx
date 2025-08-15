@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import{
   BrowserRouter as Router,
   Routes,
@@ -11,6 +11,8 @@ import Home from "./pages/Dashboard/Home";
 import Income from "./pages/Dashboard/Income";
 import Expense from "./pages/Dashboard/Expense";
 import UserProvider from './context/UserContext';
+import ProtectedRoute from "./Components/ProtectedRoute";
+
 
 const App = () => {
   return (
@@ -43,3 +45,4 @@ const Root = () => {
     <Navigate to = "/login"/>
   )
 }
+
